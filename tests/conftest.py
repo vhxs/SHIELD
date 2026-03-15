@@ -29,16 +29,16 @@ class Info():
         self.input_img = create_cnn_context(self.rand_tensor, self.cc, self.keys.publicKey, verbose=True)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def check1():
     return Info(30, 40, 32 * 32 * 32, 1, -1, 64, 64, 4, 3)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def check2():
     return Info(30, 40, 32 * 32 * 32, 1, -1, 64, 64, 1, 3)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def check3():
     return Info(30, 40, 32, 1, -1, 16, 16, 2, 3)
