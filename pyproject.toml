@@ -1,30 +1,39 @@
-[tool.poetry]
+[project]
 name = "palisade_he_cnn"
 version = "0.1.0"
 description = ""
 authors = [
-    "Vikram Saraph <vikram.saraph@jhuapl.edu>",
-    "Vivian Maloney <vivian.maloney@jhuapl.edu>",
-    "Freddy Obrecht <freddy.obrecht@jhuapl.edu>",
-    "Kate Tallaksen <kate.tallaksen@jhuapl.edu>",
-    "Prathibha Rama <prathibha.rama@jhuapl.edu>"
+    {name = "Vikram Saraph", email = "vikram.saraph@jhuapl.edu"},
+    {name = "Vivian Maloney", email = "vivian.maloney@jhuapl.edu"},
+    {name = "Freddy Obrecht", email = "freddy.obrecht@jhuapl.edu"},
+    {name = "Kate Tallaksen", email = "kate.tallaksen@jhuapl.edu"},
+    {name = "Prathibha Rama", email = "prathibha.rama@jhuapl.edu"}
 ]
 readme = "README.md"
-packages = [
-    {include = "palisade_he_cnn"}
+requires-python = ">=3.12"
+dependencies = [
+    "torch>=2.1.0",
+    "torchvision>=0.16.0",
+    "optuna>=3.2.0",
+    "joblib>=1.3.2",
+    "numpy>=2.0.0",
+    "openfhe @ https://github.com/vhxs/SHIELD-core/releases/download/v1.0.5a4/openfhe-1.0.5a0-cp312-cp312-macosx_15_0_arm64.whl ; sys_platform == 'darwin'",
+    "openfhe @ https://github.com/vhxs/SHIELD-core/releases/download/v1.0.5a4/openfhe-1.0.5a0-cp312-cp312-manylinux_2_34_x86_64.whl ; sys_platform == 'linux'",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-torch = "^1.13.1"
-torchvision = "^0.14.1"
-optuna = "^3.2.0"
-joblib = "^1.3.2"
-pytest = "^7.4.0"
-openfhe = {path = "../openfhe-python-bindings/wheelhouse/OpenFHE-1.0.5a0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"}
-numpy = "<2.0.0"
+[dependency-groups]
+dev = [
+    "certifi>=2026.2.25",
+    "pytest>=7.4.0",
+    "pytest-memray>=1.4.0",
+]
 
+[tool.pytest.ini_options]
+markers = [
+    "integration: end-to-end tests that are slow and resource-intensive (deselect with '-m not integration')",
+    "highmem: tests requiring more than 7GB RAM (deselect with '-m not highmem')",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build"]
+build-backend = "uv_build"
