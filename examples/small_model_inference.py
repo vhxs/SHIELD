@@ -9,9 +9,9 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 
-from palisade_he_cnn.cnn_context import create_cnn_context
-from palisade_he_cnn.he_cnn.utils import *
-from palisade_he_cnn.small_model import SmallModel
+from shield.cnn_context import create_cnn_context
+from shield.he_cnn.utils import *
+from shield.small_model import SmallModel
 
 np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 

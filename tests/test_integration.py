@@ -5,9 +5,9 @@ import pytest
 import numpy as np
 import torch
 
-from palisade_he_cnn.cnn_context import create_cnn_context
-from palisade_he_cnn.he_cnn.utils import create_cc_and_keys
-from palisade_he_cnn.small_model import SmallModel, train_small_model
+from shield.cnn_context import create_cnn_context
+from shield.he_cnn.utils import create_cc_and_keys
+from shield.small_model import SmallModel, train_small_model
 
 FIXTURES_DIR = os.path.join(os.path.dirname(__file__), "fixtures")
 WEIGHTS_PATH = os.path.join(FIXTURES_DIR, "small_model.pt")

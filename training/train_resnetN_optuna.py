@@ -8,9 +8,9 @@ import optuna
 import joblib
 from optuna.trial import TrialState
 
-from palisade_he_cnn.training.utils.utils_dataloading import *
-from palisade_he_cnn.training.utils.utils_kurtosis import *
-from palisade_he_cnn.training.utils.utils_resnetN import (
+from shield.training.utils.utils_dataloading import *
+from shield.training.utils.utils_kurtosis import *
+from shield.training.utils.utils_resnetN import (
     get_model, update_nesterov, update_ema, label_smoothing_loss
 )
 

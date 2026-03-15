@@ -5,10 +5,10 @@ import copy
 import json
 import time
 
-from palisade_he_cnn.training.models.resnet9 import ResNet9
-from palisade_he_cnn.training.utils.utils_dataloading import *
-from palisade_he_cnn.training.utils.utils_kurtosis import *
-from palisade_he_cnn.training.utils.utils_resnetN import (
+from shield.training.models.resnet9 import ResNet9
+from shield.training.utils.utils_dataloading import *
+from shield.training.utils.utils_kurtosis import *
+from shield.training.utils.utils_resnetN import (
     patch_whitening, update_nesterov, update_ema, label_smoothing_loss
 )
 

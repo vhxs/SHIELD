@@ -4,8 +4,8 @@ import pytest
 import torch
 import numpy as np
 
-from palisade_he_cnn.cnn_context import create_cnn_context
-from palisade_he_cnn.he_cnn.utils import *
+from shield.cnn_context import create_cnn_context
+from shield.he_cnn.utils import *
 
 np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 

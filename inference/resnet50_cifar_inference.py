@@ -10,9 +10,9 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 
-from palisade_he_cnn.src.cnn_context import create_cnn_context, TIMING_DICT
-from palisade_he_cnn.src.he_cnn.utils import *
-from palisade_he_cnn.src.utils import pad_conv_input_channels, PadChannel
+from shield.cnn_context import create_cnn_context, TIMING_DICT
+from shield.he_cnn.utils import *
+from shield.utils import pad_conv_input_channels, PadChannel
 
 np.set_printoptions(formatter={'float': lambda x: "{0:0.4f}".format(x)})
 
@@ -46,7 +46,7 @@ validset = torchvision.datasets.CIFAR10(root="./data", download=True, transform=
 validloader = torch.utils.data.DataLoader(validset, batch_size=1, shuffle=True)
 
 # top level model
-resnet_model = torch.load("palisade_he_cnn/src/weights/resnet50_cifar_gelu_kurt.pt")
+resnet_model = torch.load("shield/src/weights/resnet50_cifar_gelu_kurt.pt")
 resnet_model.eval()
 
 print(resnet_model)

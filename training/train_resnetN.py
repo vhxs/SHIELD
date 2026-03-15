@@ -8,9 +8,9 @@ import time
 import torch.nn as nn
 
 from optuna_params import get_optuna_params
-from palisade_he_cnn.training.utils.utils_dataloading import random_crop
-from palisade_he_cnn.training.utils.utils_kurtosis import *
-from palisade_he_cnn.training.utils.utils_resnetN import (
+from shield.training.utils.utils_dataloading import random_crop
+from shield.training.utils.utils_kurtosis import *
+from shield.training.utils.utils_resnetN import (
     get_model, update_nesterov, update_ema, label_smoothing_loss
 )
 

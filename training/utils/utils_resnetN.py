@@ -4,7 +4,7 @@ import numpy as np
 import torch
 import json
 import glob
-from palisade_he_cnn.training.models.resnetN_multiplexed import *
+from shield.training.models.resnetN_multiplexed import *
 
 def get_model(model_type, kwargs):
     if model_type=='resnet20':

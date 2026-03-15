@@ -5,10 +5,10 @@ import math
 import torch
 from time import time
 from collections import defaultdict
-import palisade_he_cnn.he_cnn.utils as utils
-import palisade_he_cnn.he_cnn.conv as conv
-import palisade_he_cnn.he_cnn.pool as pool
-import palisade_he_cnn.he_cnn.linear as linear
+import shield.he_cnn.utils as utils
+import shield.he_cnn.conv as conv
+import shield.he_cnn.pool as pool
+import shield.he_cnn.linear as linear
 
 from pyOpenFHE import CKKS as pal
 

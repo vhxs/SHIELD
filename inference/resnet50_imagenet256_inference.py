@@ -16,11 +16,11 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import ImageFolder
 
-from palisade_he_cnn.src.cnn_context import create_cnn_context, TIMING_DICT
-from palisade_he_cnn.src.cnn_context.utils import *
-from palisade_he_cnn.src.he_cnn.utils import get_keys, compare_accuracy
-from palisade_he_cnn.src.utils import pad_conv_input_channels
-from palisade_he_cnn.training.utils.utils import PadChannel
+from shield.cnn_context import create_cnn_context, TIMING_DICT
+from shield.cnn_context.utils import *
+from shield.he_cnn.utils import get_keys, compare_accuracy
+from shield.utils import pad_conv_input_channels
+from shield.training.utils.utils import PadChannel
 
 np.set_printoptions(formatter={'float': lambda x: "{0:0.4f}".format(x)})
 
