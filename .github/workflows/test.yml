@@ -9,6 +9,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        fixture: [c1, c2, c3]
 
     steps:
       - uses: actions/checkout@v4
@@ -21,5 +24,5 @@ jobs:
       - name: Install dependencies
         run: uv sync --group dev
 
-      - name: Run tests
-        run: uv run pytest tests/ -v -m "not integration and not highmem"
+      - name: Run tests (${{ matrix.fixture }})
+        run: uv run pytest tests/ -v -k "${{ matrix.fixture }}" -m "not integration and not highmem"
