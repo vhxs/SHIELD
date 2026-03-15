@@ -22,7 +22,7 @@ jobs:
         uses: snok/install-poetry@v1
 
       - name: Install dependencies
-        run: poetry install
+        run: poetry lock && poetry install
 
       - name: Run tests
         run: poetry run pytest palisade_he_cnn/test.py -v
