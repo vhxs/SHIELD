@@ -5,10 +5,10 @@ import math
 import torch
 from time import time
 from collections import defaultdict
-import palisade_he_cnn.src.he_cnn.utils as utils
-import palisade_he_cnn.src.he_cnn.conv as conv
-import palisade_he_cnn.src.he_cnn.pool as pool
-import palisade_he_cnn.src.he_cnn.linear as linear
+import palisade_he_cnn.he_cnn.utils as utils
+import palisade_he_cnn.he_cnn.conv as conv
+import palisade_he_cnn.he_cnn.pool as pool
+import palisade_he_cnn.he_cnn.linear as linear
 
 from pyOpenFHE import CKKS as pal
 
@@ -159,10 +159,7 @@ class CNNContext:
 
     @timing_decorator_factory("Conv ")
     def apply_conv(self, conv_layer, bn_layer=None, output_permutation=None, drop_levels=False):
-        pal.CNN.omp_set_nested(0)
-        # pal.CNN.omp_set_dynamic(0)
-
-        # Get filters, biases 
+        # Get filters, biases
         filters, biases = utils.get_filters_and_biases_from_conv2d(conv_layer)
 
         # Get batch norm info if one is passed in
@@ -209,9 +206,6 @@ class CNNContext:
 
     @timing_decorator_factory("Pool ")
     def apply_pool(self, conv=True):
-        pal.CNN.omp_set_nested(0)
-        # pal.CNN.omp_set_dynamic(0)
-
         # Apply pool
         new_shards = pool.pool(self.shards, self.mtx_size, conv)
 
@@ -270,9 +264,6 @@ class CNNContext:
     # This operation doesn't return a CNNContext, that's returned by linear
     @timing_decorator_factory("Linear ")
     def apply_linear(self, linear_layer, bias=True, scale=1.0, pool_factor=1):
-        pal.CNN.omp_set_nested(0)
-        pal.CNN.omp_set_dynamic(1)
-
         linear_weights, linear_biases = utils.get_weights_and_biases_from_linear(linear_layer,
                                                                                  self.mtx_size,
                                                                                  bias,
@@ -297,13 +288,6 @@ class CNNContext:
         degree:
             degree of Chebyshev polynomial
         """
-        if self.num_shards < 8:
-            pal.CNN.omp_set_nested(1)
-            pal.CNN.omp_set_dynamic(1)
-        else:
-            pal.CNN.omp_set_nested(0)
-            pal.CNN.omp_set_dynamic(1)
-
         # TODO this can be absorbed into the BN
         new_shards = [x * (1 / bound) for x in self.shards]
         new_shards = pal.CNN.fhe_gelu(new_shards, degree, bound)
@@ -312,13 +296,6 @@ class CNNContext:
 
     @timing_decorator_factory("Bootstrapping ")
     def apply_bootstrapping(self, meta=False):
-        if self.num_shards < 8:
-            pal.CNN.omp_set_nested(1)
-            pal.CNN.omp_set_dynamic(1)
-        else:
-            pal.CNN.omp_set_nested(0)
-            pal.CNN.omp_set_dynamic(1)
-
         cc = self.shards[0].getCryptoContext()
         if meta:
             new_shards = cc.evalMetaBootstrap(self.shards)

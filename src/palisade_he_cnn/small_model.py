@@ -1,5 +1,6 @@
 # (c) 2021-2024 The Johns Hopkins University Applied Physics Laboratory LLC (JHU/APL).
 
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -202,8 +203,8 @@ class SmallModel(nn.Module):
         _ = self(inputs)
         return activation[layer_name]
 
-def train_small_model():
-    DATA_DIR = "../data"
+def train_small_model(output_path="small_model.pt"):
+    DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data")
     transform=transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,)),
@@ -258,8 +259,8 @@ def train_small_model():
             optimizer.step()
             optimizer.zero_grad()
 
-    print("Saving model as %s" % "small_model.pt")
-    torch.save(model.state_dict(), "small_model.pt")
+    print(f"Saving model as {output_path}")
+    torch.save(model.state_dict(), output_path)
 
 if __name__ == "__main__":
     train_small_model()

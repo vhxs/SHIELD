@@ -13,16 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.12"
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-
       - name: Install dependencies
-        run: poetry lock && poetry install
+        run: uv sync --group dev
 
       - name: Run tests
-        run: poetry run pytest palisade_he_cnn/test.py -v
+        run: uv run pytest tests/ -v -m "not integration and not highmem"

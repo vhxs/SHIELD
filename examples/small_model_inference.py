@@ -2,15 +2,16 @@
 
 # export OMP_DISPLAY_ENV=TRUE
 import os
+import sys
 from time import time
 
 import torch
 import torchvision
 import torchvision.transforms as transforms
 
-from cnn_context import create_cnn_context
-from he_cnn.utils import *
-from small_model import SmallModel
+from palisade_he_cnn.cnn_context import create_cnn_context
+from palisade_he_cnn.he_cnn.utils import *
+from palisade_he_cnn.small_model import SmallModel
 
 np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 
@@ -27,7 +28,7 @@ cc, keys = create_cc_and_keys(batch_size, mult_depth=mult_depth, scale_factor_bi
                               bootstrapping=False)
 
 # load the model
-weight_file = "palisade_he_cnn/src/weights/small_model.pt"
+weight_file = os.path.join(os.path.dirname(__file__), "weights", "small_model.pt")
 print(os.getcwd())
 model = SmallModel(activation='gelu', pool_method='avg')
 model.load_state_dict(torch.load(weight_file))
@@ -91,3 +92,4 @@ for i, test_data in enumerate(validloader):
     """
 
     print(out_string)
+    break
