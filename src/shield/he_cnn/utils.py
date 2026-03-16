@@ -6,8 +6,8 @@ from pathlib import Path
 import numpy as np
 import pyOpenFHE as pal
 from pyOpenFHE import CKKS as pal_ckks
-import numpy as np
-from pathlib import Path
+
+from shield.he_cnn.config import HEConfig
 
 serial = pal_ckks.serial
 
@@ -25,9 +25,8 @@ def next_power_of_2(n):
     return p
 
 
-def load_cc_and_keys(batch_size, mult_depth=10, scale_factor_bits=40, bootstrapping=False):
-    f = "{}-{}-{}-{}".format(batch_size, mult_depth, scale_factor_bits, int(bootstrapping))
-    path = Path("serialized") / f
+def load_cc_and_keys(config: HEConfig):
+    path = Path("serialized") / config.serialization_key
 
     P = (path / "PublicKey.bin").as_posix()
     publicKey = pal_ckks.serial.DeserializeFromFile_PublicKey(P, pal_ckks.serial.SerType.BINARY)
@@ -42,7 +41,7 @@ def load_cc_and_keys(batch_size, mult_depth=10, scale_factor_bits=40, bootstrapp
     P = (path / "EvalAutomorphismKey.bin").as_posix()
     pal_ckks.serial.DeserializeFromFile_EvalAutomorphismKey_CryptoContext(cc, P, pal_ckks.serial.SerType.BINARY)
 
-    if bootstrapping:
+    if config.bootstrapping:
         cc.evalBootstrapSetup()
 
     return cc, keys
@@ -59,13 +58,11 @@ def save_cc_and_keys(cc, keys, path):
     assert pal_ckks.serial.SerializeToFile_EvalAutomorphismKey_CryptoContext(cc, P, pal_ckks.serial.SerType.BINARY)
 
 
-def create_cc_and_keys(batch_size, mult_depth=10, scale_factor_bits=40, bootstrapping=False, save=False):
-    # We make use of palisade HE by creating a crypto context object
-    # this specifies things like multiplicative depth
+def create_cc_and_keys(config: HEConfig, save: bool = False):
     cc = pal_ckks.genCryptoContextCKKS(
-        mult_depth,  # number of multiplications you can perform
-        scale_factor_bits,  # kindof like number of bits of precision
-        batch_size,  # length of your vector, can be any power-of-2 up to 2^14
+        config.mult_depth,
+        config.scale_factor_bits,
+        config.batch_size,
     )
 
     print(f"CKKS scheme is using ring dimension = {cc.getRingDimension()}, batch size = {cc.getBatchSize()}")
@@ -76,39 +73,27 @@ def create_cc_and_keys(batch_size, mult_depth=10, scale_factor_bits=40, bootstra
     cc.enable(pal.enums.PKESchemeFeature.ADVANCEDSHE)
     cc.enable(pal.enums.PKESchemeFeature.FHE)
 
-    # generate keys
     keys = cc.keyGen()
     cc.evalMultKeyGen(keys.secretKey)
     cc.evalPowerOf2RotationKeyGen(keys.secretKey)
 
-    if bootstrapping:
+    if config.bootstrapping:
         cc.evalBootstrapSetup()
         cc.evalBootstrapKeyGen(keys.secretKey)
 
     if save:
-        f = "{}-{}-{}-{}".format(batch_size, mult_depth, scale_factor_bits, int(bootstrapping))
-        path = Path("serialized") / f
+        path = Path("serialized") / config.serialization_key
         path.mkdir(parents=True, exist_ok=True)
         save_cc_and_keys(cc, keys, path)
 
     return cc, keys
 
 
-def get_keys(mult_depth,
-             scale_factor_bits,
-             batch_size,
-             bootstrapping):
+def get_keys(config: HEConfig):
     try:
-        cc, keys = load_cc_and_keys(batch_size,
-                                    mult_depth=mult_depth,
-                                    scale_factor_bits=scale_factor_bits,
-                                    bootstrapping=bootstrapping)
-    except:
-        cc, keys = create_cc_and_keys(batch_size,
-                                      mult_depth=mult_depth,
-                                      scale_factor_bits=scale_factor_bits,
-                                      bootstrapping=bootstrapping,
-                                      save=True)
+        cc, keys = load_cc_and_keys(config)
+    except Exception:
+        cc, keys = create_cc_and_keys(config, save=True)
     return cc, keys
 
 
@@ -222,7 +207,8 @@ def serialize(cc, keys, ctxt):
 
 
 if __name__ == "__main__":
-    cc, keys = get_keys(mult_depth=34, scale_factor_bits=59, batch_size=32 * 32 * 32, bootstrapping=True)
+    config = HEConfig(batch_size=32 * 32 * 32, mult_depth=34, scale_factor_bits=59, bootstrapping=True)
+    cc, keys = get_keys(config)
     print(cc.getBatchSize())
     shard = cc.encrypt(keys.publicKey, [0.0 for _ in range(32768)])
     serialize(cc, keys, shard)

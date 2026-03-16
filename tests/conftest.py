@@ -5,7 +5,8 @@ import torch
 import numpy as np
 
 from shield.cnn_context import create_cnn_context
-from shield.he_cnn.utils import *
+from shield.he_cnn.config import HEConfig
+from shield.he_cnn.utils import create_cc_and_keys
 
 np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 
@@ -25,7 +26,8 @@ class Info():
         rand_tensor = (max - min) * torch.rand((channel_size, h, w)) + min
         self.rand_tensor = rand_tensor
 
-        self.cc, self.keys = create_cc_and_keys(batch_size, mult_depth=mult_depth, scale_factor_bits=scale_factor_bits, bootstrapping=False)
+        config = HEConfig(batch_size=batch_size, mult_depth=mult_depth, scale_factor_bits=scale_factor_bits)
+        self.cc, self.keys = create_cc_and_keys(config)
         self.input_img = create_cnn_context(self.rand_tensor, self.cc, self.keys.publicKey, verbose=True)
 
 

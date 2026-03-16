@@ -20,6 +20,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torchvision.datasets import ImageFolder
 
+from shield.he_cnn.config import HEConfig
 from shield.he_cnn.utils import compare_accuracy, get_keys
 from shield.utils import pad_conv_input_channels
 from shield.training.utils.utils import PadChannel
@@ -86,12 +87,9 @@ unencrypted = ptxt_embedded
 ##############################################################################
 
 # create HE cc and keys
-mult_depth = 34
-scale_factor_bits = 59
-batch_size = 32 * 32 * 32
-
 # if using bootstrapping, you must increase scale_factor_bits to 59
-cc, keys = get_keys(mult_depth, scale_factor_bits, batch_size, bootstrapping=True)
+config = HEConfig(batch_size=32 * 32 * 32, mult_depth=34, scale_factor_bits=59, bootstrapping=True)
+cc, keys = get_keys(config)
 
 
 ##############################################################################
