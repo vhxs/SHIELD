@@ -1,5 +1,6 @@
 # (c) 2021-2024 The Johns Hopkins University Applied Physics Laboratory LLC (JHU/APL).
 
+import functools
 import numpy as np
 import math
 import torch
@@ -64,6 +65,7 @@ def create_cnn_context(image, cc, publicKey, verbose=False):
 
 def timing_decorator_factory(prefix=""):
     def timing_decorator(func):
+        @functools.wraps(func)
         def wrapper_function(*args, **kwargs):
             global TIMING_DICT
             start = time()
@@ -202,7 +204,7 @@ class CNNContext:
         elif stride == (2, 2):
             return cnn_context.apply_pool(conv=False)
         else:
-            raise ValueError("Unsupported stride: {stride}")
+            raise ValueError(f"Unsupported stride: {stride}")
 
     @timing_decorator_factory("Pool ")
     def apply_pool(self, conv=True):
@@ -223,7 +225,11 @@ class CNNContext:
         return self.apply_linear(linear_layer, has_bias, pool_factor=self.mtx_size)
 
     @timing_decorator_factory("Bottleneck block ")
-    def apply_bottleneck(self, bottleneck_block, debug=False, gelu_params={}, bootstrap_params={}, bootstrap=True):
+    def apply_bottleneck(self, bottleneck_block, debug=False, gelu_params=None, bootstrap_params=None, bootstrap=True):
+        if gelu_params is None:
+            gelu_params = {}
+        if bootstrap_params is None:
+            bootstrap_params = {}
         # Bottleneck block's forward pass is here: https://pytorch.org/vision/0.8/_modules/torchvision/models/resnet.html
 
         skip_connection = self
