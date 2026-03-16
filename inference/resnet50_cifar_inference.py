@@ -11,7 +11,9 @@ import torchvision
 import torchvision.transforms as transforms
 
 from shield.cnn_context import create_cnn_context, TIMING_DICT
-from shield.he_cnn.utils import *
+from shield.he_cnn.config import HEConfig
+from shield.he_cnn.utils import get_keys, compare_accuracy
+import numpy as np
 from shield.utils import pad_conv_input_channels, PadChannel
 
 np.set_printoptions(formatter={'float': lambda x: "{0:0.4f}".format(x)})
@@ -24,13 +26,9 @@ img_idx = int(args["idx"])
 print("img_idx", img_idx)
 
 # create HE cc and keys
-mult_depth = 35
-scale_factor_bits = 59
-batch_size = 32 * 32 * 32
-
-
 # if using bootstrapping, you must increase scale_factor_bits to 59
-cc, keys = get_keys(mult_depth, scale_factor_bits, batch_size, bootstrapping=True)
+config = HEConfig(batch_size=32 * 32 * 32, mult_depth=35, scale_factor_bits=59, bootstrapping=True)
+cc, keys = get_keys(config)
 
 
 stats = ((0.4914, 0.4822, 0.4465), # mean

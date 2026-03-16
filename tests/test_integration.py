@@ -6,6 +6,7 @@ import numpy as np
 import torch
 
 from shield.cnn_context import create_cnn_context
+from shield.he_cnn.config import HEConfig
 from shield.he_cnn.utils import create_cc_and_keys
 from shield.small_model import SmallModel, train_small_model
 
@@ -30,12 +31,8 @@ def test_small_model_inference():
     x = fixture['x']
 
     # Set up HE context
-    mult_depth = 30
-    scale_factor_bits = 40
-    batch_size = 32 * 32 * 32
-    cc, keys = create_cc_and_keys(batch_size, mult_depth=mult_depth,
-                                  scale_factor_bits=scale_factor_bits,
-                                  bootstrapping=False)
+    config = HEConfig(batch_size=32 * 32 * 32, mult_depth=30, scale_factor_bits=40)
+    cc, keys = create_cc_and_keys(config)
 
     # HE inference
     input_img = create_cnn_context(x, cc, keys.publicKey, verbose=False)
