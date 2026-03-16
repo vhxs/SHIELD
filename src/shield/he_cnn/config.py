@@ -23,8 +23,6 @@ class HEConfig(BaseModel):
     def batch_size_must_be_power_of_two(cls, v: int) -> int:
         if v <= 0 or v & (v - 1) != 0:
             raise ValueError(f"batch_size must be a positive power of 2, got {v}")
-        if v > 2**14:
-            raise ValueError(f"batch_size must be <= 2^14 (16384), got {v}")
         return v
 
     @field_validator("mult_depth")
