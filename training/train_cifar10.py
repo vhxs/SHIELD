@@ -168,6 +168,7 @@ def train_one_run(
     momentum: float,
     weight_decay: float,
     epochs: int,
+    max_epochs: int,
     pretrained: bool,
     device,
     dtype,
@@ -212,6 +213,9 @@ def train_one_run(
         total_epochs = epochs
     else:
         total_epochs = len(lr_schedule) // N
+
+    if max_epochs is not None:
+        total_epochs = min(total_epochs, max_epochs)
 
     best_acc = 0.0
     best_model = None
@@ -322,6 +326,9 @@ def main():
                         help="CIFAR-10 data directory (auto-downloaded if absent)")
     parser.add_argument("--output-dir", type=str, default="weights",
                         help="Directory to save model weights (default: weights/)")
+    parser.add_argument("--max-epochs", type=int, default=None,
+                        help="Hard cap on epochs regardless of architecture schedule. "
+                             "Use --max-epochs 2 for a quick smoke test.")
     parser.add_argument("--no-pretrained", dest="pretrained", action="store_false",
                         help="Train ResNet50 from scratch instead of ImageNet weights")
     parser.add_argument("--dataset", choices=["CIFAR10", "CIFAR100"], default="CIFAR10",
@@ -381,6 +388,7 @@ def main():
         batch_size=batch_size,
         lr=lr, lr_bias=lr_bias, momentum=momentum, weight_decay=weight_decay,
         epochs=args.epochs,
+        max_epochs=args.max_epochs,
         pretrained=args.pretrained,
         device=device, dtype=dtype,
     )
