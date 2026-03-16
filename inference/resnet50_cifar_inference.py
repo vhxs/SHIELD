@@ -4,6 +4,7 @@
 import argparse
 import copy
 import json
+from pathlib import Path
 from time import time
 
 import torch
@@ -44,7 +45,7 @@ validset = torchvision.datasets.CIFAR10(root="./data", download=True, transform=
 validloader = torch.utils.data.DataLoader(validset, batch_size=1, shuffle=True)
 
 # top level model
-resnet_model = torch.load("shield/src/weights/resnet50_cifar_gelu_kurt.pt")
+resnet_model = torch.load("weights/resnet50_cifar_gelu_kurt.pt", weights_only=False)
 resnet_model.eval()
 
 print(resnet_model)
